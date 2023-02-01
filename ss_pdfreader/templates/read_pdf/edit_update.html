@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+{% extends "read_pdf/index.html" %}
+{% load static %}
+
+{% block title %}
+<title>Show Template</title>
+{% endblock %}
+
+{% block style %}
+
+.square1 {
+      background-color: #F8F8FA;
+      border: 1px solid #001648;
+      border-radius: 6px;
+      box-shadow: rgb(0 0 0 / 38%) 0px 0px 10px;
+      padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+      width: auto;
+      height: auto;
+    }
+
+    .square1 p, .square2 p {
+      display: grid;
+      grid-template-columns:  9rem 1fr;
+      margin-bottom: 0;
+      align-items: center;
+      padding: 10px 0px;
+    }
+
+
+.square2 {
+      border: 1px solid #001648;
+      border-radius: 6px;
+      box-shadow: rgb(0 0 0 / 38%) 0px 0px 10px;
+      padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+      background-color: #B3DEEE;
+      margin-top: 30px;
+      width: auto;
+      height: auto;
+    }
+
+    input[type="text"], input[type="number"]  {
+      border: 1px solid #c4c4c4;
+      font-weight: 400;
+      font-size: 1rem;
+      height: 44px;
+      padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+      border-radius: 5px;
+      width: 50%;
+      -webkit-transition: width .35s ease-in-out;
+      transition: width .35s ease-in-out;
+    }
+    input[type="number"]::placeholder {
+      opacity: 1;
+    }
+    input[type="text"]::placeholder {
+      opacity: 1;
+    }
+    input[type="number"]:focus {
+      outline: none !important;
+      border-color: rgba(29, 29, 29, 0.3);
+      width: 80%;
+      box-shadow: none;
+    }
+    input[type="text"]:focus {
+      outline: none !important;
+      border-color: rgba(29, 29, 29, 0.3);
+      width: 80%;
+      box-shadow: none;
+    }
+
+    input[type="file"] {
+      font-size: 1rem;
+    }
+    .square1 p:nth-child(4) {
+      display: block;
+    }
+
+    select  {
+      display: block;
+      padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+      -moz-padding-start: calc(0.75rem - 3px);
+      font-weight: 400;
+      line-height: 1.5;
+      font-size: 1rem;
+      width: 50%;
+      height: 44px;
+      color: #212529;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 16px 12px;
+      border: 1px solid #c4c4c4;
+      border-radius: 0.375rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+
+    }
+
+    select:disabled {
+      background-color: #F5F5F7;
+      color:#595454;
+    }
+    select:focus {
+      border-color: none;
+      outline: 0;
+    }
+
+{% endblock %}
+
+
+{% block content %}
+
+
+
+<div class="container">
+  <div class="jumbotron" >
+      <form id="full" method="post">
+    <div id="formdisable">
+    <div class="square1">
+    {{tform.as_p}}
+    </div>
+    {% if formset_show %}
+    <div class="square2  mb-5">
+    {{ formset.management_data }}
+
+    {% csrf_token %}
+
+    {{ formset.as_p }}
+
+    </div>
+        {% endif %}
+</div>
+    <div id="submitbutton">
+      <div class="d-flex">
+          <a href="/template_config"><button type="button" style="background-color: #dc3545" class="btn-blue">Cancel</button></a>
+          <button class="btn-blue ms-4" type="submit" name="submit_button" value="Draft">Save as Draft</button>
+          <button class="btn-blue ms-4" type="submit" name="submit_button" value="Sent for Approval">Send For Approval</button>
+      </div>
+      </div>
+      </form>
+
+      <div id="editbuttons" class="d-flex mt-4">
+      <a href="/template_config"><button type="button" class="btn-blue">Back</button></a>
+      <button type="submit" value="edit" class="btn-blue ms-4" onclick="enableinput()">Edit Template</button>
+      </div>
+
+
+  </div>
+  </div>
+
+
+<script>
+  $(document).ready(function(){
+    $("#formdisable :input").attr("disabled", true);
+    $(".square1 p a").attr("target","_blank");
+    $("#submitbutton").hide();
+  });
+
+
+  function enableinput() {
+   $("#formdisable :input").attr("disabled", false);
+   document.getElementById("editbuttons").style.display='none';
+    document.getElementById("submitbutton").style.display='block';
+}
+
+
+</script>
+
+
+{% endblock %}
+

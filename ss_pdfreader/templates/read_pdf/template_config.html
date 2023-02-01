@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+{% extends "read_pdf/index.html" %}
+{% load static %}
+
+{% block title %}
+<title>Show Template</title>
+<style>
+  .table th {
+  padding: 0.8rem 0.5rem;
+  vertical-align: middle;
+}
+.table td {
+  vertical-align: middle;
+}
+.table th:nth-child(1) {
+  width: 18%;
+}
+.table th:nth-child(2) {
+  width: 17%;
+}
+.table th:nth-child(3) {
+  width: 15%;
+}
+.table th:nth-child(4) {
+  width: 15%;
+}
+.table th:nth-child(5) {
+  width: 25%;
+}
+
+.table td:nth-child(6) {
+  text-align: center;
+}
+
+.table td:nth-child(6) a {
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #fff;
+    color:#001648;
+    cursor: pointer;
+    transition: all .5s;
+    outline: none;
+    border-radius: 6px;
+    white-space: nowrap;
+    padding: 10px 35px;
+    border: 3px solid #001648;
+}
+.table td:nth-child(6) a:hover {
+  background-color: #001648;
+  color:#fff;
+  transition: "all .5s";
+  box-shadow: rgb(0 0 0 / 38%) 0px 0px 10px;
+}
+
+
+
+</style>
+
+
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container">
+  <div class="jumbotron">
+  <div class="add-new-btn">
+   <a href="/create"> <button type="button" class="btn-blue">Add New</button></a>
+  </div>
+    <table class="table" style="width: 100%;">
+      <tr><th scope="col">Template Name</th>
+      <th scope="col">Domain</th>
+      <th scope="col">Requestor</th>
+      <th scope="col">Status</th>
+      <th scope="col">Sample</th>
+      <th scope="col">Action</th>
+      </tr>
+      {% for item in records %}
+      <tr>
+        <td>{{item.name}}</td>
+        <td>{{item.domain}}</td>
+        <td>{{item.author}}</td>
+        <td>{{item.status}}</td>
+        <td><embed src= "{{ item.sample.url }}" width= "300" height= "175"></td>
+        <td><a href="update/{{item.id}}">Edit</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+
+
+  </div>
+  </div>
+
+{% endblock %}
+

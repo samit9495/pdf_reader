@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+{% extends "read_pdf/index.html" %}
+
+{% block title %}
+<title>Create Template</title>
+<style>
+    #add_new_1 {
+        background-color: #BFBAFA;
+        border: 1px solid #001648;
+        border-radius: 6px;
+        box-shadow: rgb(0 0 0 / 38%) 0px 0px 10px;
+        /* box-shadow: 0px 10px 40px 0px rgba(0, 0, 0, 0.08); */
+        padding: 1.5rem;
+        width: auto;
+        height: auto;
+        margin-left: 12%;
+        margin-right: 12%;
+    }
+    #add_new_1 .form-group {
+      display: grid;
+      grid-template-columns:  8rem 1fr;
+      margin-bottom: 0;
+      align-items: center;
+      padding: 10px 0px;
+    }
+
+    #add_new_1 input[type="text"], #add_new_1 input[type="number"]  {
+      border: 1px solid #c4c4c4;
+      font-weight: 400;
+      font-size: 1rem;
+      height: 44px;
+      padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+      border-radius: 5px;
+      width: 80%;
+      -webkit-transition: width .35s ease-in-out;
+      transition: width .35s ease-in-out;
+    }
+    #add_new_1 input[type="number"]::placeholder {
+      opacity: 1;
+    }
+    #add_new_1 input[type="text"]::placeholder {
+      opacity: 1;
+    }
+    #add_new_1 input[type="number"]:focus {
+      outline: none !important;
+      border-color: rgba(29, 29, 29, 0.3);
+      width: 100%;
+      box-shadow: none;
+    }
+    #add_new_1 input[type="text"]:focus {
+      outline: none !important;
+      border-color: rgba(29, 29, 29, 0.3);
+      width: 100%;
+      box-shadow: none;
+    }
+    #add_new_1 select  {
+      display: block;
+      padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+      -moz-padding-start: calc(0.75rem - 3px);
+      font-weight: 400;
+      line-height: 1.5;
+      font-size: 1rem;
+      width: 80%;
+      height: 44px;
+      color: #212529;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 16px 12px;
+      border: 1px solid #c4c4c4;
+      border-radius: 0.375rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    #add_new_1 select:focus {
+      border-color: none;
+      outline: 0;
+    }
+
+    .table th {
+        width: 33.33%;
+        text-align: center;
+        padding: 0.8rem 0.5rem;
+    }
+
+    .row_text_1 {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        border: 2px solid #212529;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 16px;
+        box-shadow: rgb(0 0 0 / 38%) 0px 0px 10px;
+    }
+
+    .row_text_field_1 {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        border: 2px solid #212529;
+        padding: 1px  14px 14px  14px;
+        border-radius: 6px;
+        box-shadow: rgb(0 0 0 / 38%) 0px 0px 10px;
+    }
+
+    .row_text_field_1 input[type="text"], .row_text_field_1 input[type="number"]  {
+      border: 1px solid #c4c4c4;
+      font-weight: 400;
+      font-size: 1rem;
+      height: 44px;
+      padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+      border-radius: 5px;
+      width: 100%;
+      /* -webkit-transition: width .35s ease-in-out;
+      transition: width .35s ease-in-out; */
+    }
+    .row_text_field_1 input[type="number"]::placeholder {
+      opacity: 1;
+    }
+    .row_text_field_1 input[type="text"]::placeholder {
+      opacity: 1;
+    }
+    .row_text_field_1 input[type="number"]:focus {
+      outline: none !important;
+      border-color: rgba(29, 29, 29, 0.3);
+      /* width: 100%; */
+      box-shadow: none;
+    }
+    .row_text_field_1 input[type="text"]:focus {
+      outline: none !important;
+      border-color: rgba(29, 29, 29, 0.3);
+      /* width: 100%; */
+      box-shadow: none;
+    }
+    .row_text_field_1 select  {
+      display: block;
+      padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+      -moz-padding-start: calc(0.75rem - 3px);
+      font-weight: 400;
+      line-height: 1.5;
+      font-size: 1rem;
+      width: 100%;
+      height: 44px;
+      color: #212529;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 16px 12px;
+      border: 1px solid #c4c4c4;
+      border-radius: 0.375rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    .row_text_field_1 select:focus {
+      border-color: none;
+      outline: 0;
+    }
+
+</style>
+
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+  <div class="jumbotron">
+        <div class="center">
+          <h2>Please Enter Details to Upload Template</h2>
+        </div>
+<form method="POST" id="add_new_1" enctype="multipart/form-data" action="">
+      <div class="i-am-centered" >
+
+    {% csrf_token %}
+    <div class="form-group">
+        <label>Name: </label>
+        {{ form.name }}
+    </div>
+        <div class="form-group">
+        <label>Domain: </label>
+        {{ form.domain }}
+    </div>
+        <div class="form-group">
+        <label>Engine: </label>
+        {{ form.engine }}
+    </div>
+        <div class="form-group">
+        <label>Sample: </label>
+        {{ form.sample }}
+    </div>
+        <div class="form-group">
+        <label>Identifier: </label>
+        {{ form.identifier }}
+    </div>
+        <div class="form-group">
+        <label>Comments: </label>
+        {{ form.comments }}
+    </div>
+  </div>
+    {% if type == "form1" %}
+    <div class="center mt-4">
+    <button type="submit" class="btn-blue" name="submit_button" value="raw" >Raw Text</button>
+    </div>
+    {% endif %}
+</form>
+
+
+      {% if type == "form2" %}
+    <table class="table" style="border: 1px solid #001648;">
+      <tr><th scope="col">Image</th>
+      <th scope="col">Text</th>
+      <th scope="col">Create a New Field</th>
+      </tr>
+      <tr>
+        <td><embed src= "{{ record.sample.url }}" width="440" height= "600"></td>
+        <td>
+            <div class="row_text_1">
+                {{text}}
+            </div>
+        </td>
+        <td>
+            <form id="form-container" class="row_text_field_1" method="POST">
+                {% csrf_token %}
+                {{formset.management_form}}
+                {% for form in formset %}
+                <div class="field-form">
+                    {{ form.non_field_errors }}
+                  {{ form.source.errors }}
+                  {{ form.source }}
+                <p>
+                    {{ form.pdf.errors }}
+                    <input type="hidden"
+               name="form-{{ forloop.counter0 }}-pdf"
+               id="{{ form.pdf.id_for_label}}"
+               value="{{record.id}}">
+
+                </p>
+                <p>{{ form.field.label_tag }}
+                    {{ form.field.errors }}
+                    {{ form.field }}</p>
+                <p>{{ form.start.label_tag }}
+                    {{ form.start.errors }}
+                    {{ form.start }}</p>
+                <p>{{ form.end.label_tag }}
+                    {{ form.end.errors }}
+                    {{ form.end }}</p>
+                <p>{{ form.occurance.label_tag }}
+                    {{ form.occurance.errors }}
+                    {{ form.occurance }}</p>
+                <p>{{ form.regex_type.label_tag }}
+                    {{ form.regex_type.errors }}
+                    <select name="form-{{ forloop.counter0 }}-regex_type" onchange="myFunction(this.value,'{{ form.regex.id_for_label}}')">
+                        {% for widget in form.regex_type.subwidgets %}
+                            {{ widget }}
+                        {% endfor %}
+                    </select>
+
+                </p>
+                <p>{{ form.regex.label_tag }}
+                    {{ form.regex.errors }}
+                    {{ form.regex }}</p>
+
+                </div>
+                {% endfor %}
+                  <input type="hidden" name="pdf" value="{{record.id}}">
+                <button id="add-form" class="btn-blue mt-3" type="button">Add Another Field</button>
+                <br/>
+
+                <button type="reset" class="btn-blue mt-3" name="reset_button">Reset</button>
+                <button type="submit" class="btn-blue ms-3" name="submit_button" value="Draft">Save as Draft</button>
+                <button type="submit" class="btn-blue mt-3" name="submit_button" value="Sent for Approval">Send For Approval</button>
+            </form>
+        </td>
+      </tr>
+    </table>
+
+
+
+
+
+
+      {% endif %}
+
+  </div>
+  </div>
+
+<script>
+function myFunction(val,item_id) {
+    if (val == "Decimal numbers") {
+    document.getElementById(item_id).setAttribute('value','\d+\.\d*');
+    }
+if (val == "Numeric") {
+    document.getElementById(item_id).setAttribute('value','\d+');
+    }
+if (val == "Alphanumeric") {
+    document.getElementById(item_id).setAttribute('value','\w+');
+    }
+if (val == "All characters, except newline or line terminator") {
+    document.getElementById(item_id).setAttribute('value','.+');
+    }
+if (val == "String beginning with") {
+    document.getElementById(item_id).setAttribute('value','^');
+    }
+if (val == "Alphabet") {
+    document.getElementById(item_id).setAttribute('value','[a-zA-Z]+');
+    }
+if (val == "Special Characters") {
+    document.getElementById(item_id).setAttribute('value','[^a-zA-Z0-9 ]');
+    }
+if (val == "Alphanumberic with special characters ASCII Characters") {
+    document.getElementById(item_id).setAttribute('value','[\x00-\x1F21-\x7F0]+');
+    }
+}
+
+        let fieldForm = document.querySelectorAll(".field-form")
+        let container = document.querySelector("#form-container")
+        let addButton = document.querySelector("#add-form")
+        let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+
+        let formNum = fieldForm.length-1
+        addButton.addEventListener('click', addForm)
+
+        function addForm(e){
+            e.preventDefault()
+
+            let newForm = fieldForm[0].cloneNode(true)
+            let formRegex = RegExp(`form-(\\d){1}-`,'g')
+
+            formNum++
+            newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
+            container.insertBefore(newForm, addButton)
+
+            totalForms.setAttribute('value', `${formNum+1}`)
+        }
+    </script>
+
+{% endblock %}

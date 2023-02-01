@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+{% extends "read_pdf/index.html" %}
+{% load static %}
+
+{% block title %}
+<title>Approve Template</title>
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container-fluid">
+  <div class="jumbotron">
+
+
+      {% if rec_count %}
+        <div class="center">
+          <h2>Please Select a Template to Approve</h2>
+        </div>
+
+    <form method="post">
+      {% csrf_token %}
+    <table class="table">
+      <tr><th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Domain</th>
+      <th scope="col">Engine</th>
+      <th scope="col">Identifier</th>
+      <th scope="col">Sample</th>
+      </tr>
+      {% for item in page_obj %}
+      <tr>
+        <td><input type="checkbox" name="approve_check" value="{{item.id}}">{{item.id}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.domain}}</td>
+        <td>{{item.engine}}</td>
+        <td>{{item.identifier}}</td>
+        <td><embed src= "{{ item.sample.url }}" width= "400" height= "175"></td>
+      </tr>
+      {% endfor %}
+    </table>
+    <div class="buttons">
+    <input type="button" class="button" onclick='selects()' value="Select All"/>
+    <button type="submit" class="button" name="approve" value="yes">Approve</button>
+    <button type="submit" class="button" name="approve_all" value="yes">Approve All</button>
+    </div>
+    </form>
+
+    <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+      {% else %}
+      <div>
+
+    <h3>No Pending Records left for Approval</h3>
+    </div>
+      {% endif %}
+
+
+  </div>
+  </div>
+
+
+
+
+
+<script type="text/javascript">
+            function selects(){
+                var ele=document.getElementsByName('approve_check');
+                for(var i=0; i<ele.length; i++){
+                    if(ele[i].type=='checkbox')
+                        ele[i].checked=true;
+                }
+            }
+            function deSelect(){
+                var ele=document.getElementsByName('approve_check');
+                for(var i=0; i<ele.length; i++){
+                    if(ele[i].type=='checkbox')
+                        ele[i].checked=false;
+
+                }
+            }
+        </script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
