@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import JSONField
 
 Engine_choice = [
     ("Engine 1", "Engine 1"),
     ("Engine 2", "Engine 2"),
-    ("Engine 3", "Engine 3"),
+    # ("Engine 3", "Engine 3"),
 ]
 
 DOMAIN_CHOICES = (
@@ -45,7 +46,7 @@ NODE_CHOICES = [("Machine 1", "Machine 1"),
 
 INPUT_CHOICES = [("Network/Local", "Network/Local"), ("Email", "Email")]
 NOTIFICATION_CHOICES = [("Email", "Email"), ("SMS", "SMS"), ("IVR", "IVR")]
-OUTPUT_CHOICES = [("JSON", "JSON"), ("EXCEL", "EXCEL"), ("CSV", "CSV")]
+OUTPUT_CHOICES = [("JSON", "JSON"), ("XML", "XML")]
 
 
 class template(models.Model):
@@ -68,7 +69,7 @@ class Fields(models.Model):
     start = models.CharField(max_length=200)
     end = models.CharField(max_length=200)
     occurance = models.IntegerField()
-    regex_type = models.CharField(max_length=100, choices=regex_choice)
+    regex_type = models.CharField(max_length=100, choices=regex_choice, null=True)
     regex = models.CharField(max_length=100, null=True)
 
     class Meta:
@@ -76,17 +77,26 @@ class Fields(models.Model):
 
 
 class Jobs(models.Model):
-    execution = models.CharField(max_length=100,
-                                 choices=[("Immediate", "Immediate"), ("Frequency Based", "Frequency Based")])
+    # execution = models.CharField(max_length=100,
+    #                              choices=[("Immediate", "Immediate"), ("Frequency Based", "Frequency Based")])
     template = models.ForeignKey(to=template, on_delete=models.CASCADE, related_name="job")
     name = models.CharField(max_length=100)
-    node = models.CharField(max_length=100, choices=NODE_CHOICES)
-    engine = models.CharField(max_length=100, choices=Engine_choice)
-    input = models.CharField(max_length=100, choices=INPUT_CHOICES)
+    # node = models.CharField(max_length=100, choices=NODE_CHOICES)
+    # engine = models.CharField(max_length=100, choices=Engine_choice)
+    # input = models.FileField(upload_to="job_pdfs/")
     file_fields = models.TextField()
-    Notification = models.CharField(max_length=50, choices=NOTIFICATION_CHOICES)
-    output_format = models.CharField(max_length=50,choices=OUTPUT_CHOICES)
+    # Notification = models.CharField(max_length=50, choices=NOTIFICATION_CHOICES)
+    output_format = models.CharField(max_length=50, choices=OUTPUT_CHOICES)
     output_filename = models.CharField(max_length=100)
+    status = models.CharField(max_length=100, default="Pending")
 
     class Meta:
         verbose_name_plural = "Jobs"
+    def __str__(self):
+        return str(self.id)
+
+class Jobpdf(models.Model):
+    input = models.FileField(upload_to="job_pdfs")
+    job = models.ForeignKey(Jobs, on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+    result = JSONField()

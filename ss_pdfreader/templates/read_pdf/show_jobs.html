@@ -14,22 +14,33 @@
 <div class="container">
   <div class="jumbotron">
   <div class="add-new-btn">
+    {% if data %}
+    {{data}}
+    {% endif %}
    <a href="/jobs"> <button type="button" class="btn btn-success">Add New</button></a>
   </div>
     <table class="table" style="width: 100%;">
       <tr><th scope="col">Job Name</th>
-      <th scope="col">Node</th>
-      <th scope="col">Notification</th>
       <th scope="col">Output Format</th>
       <th scope="col">Output Filename</th>
+      <th scope="col">Status</th>
+      <th scope="col">Action</th>
       </tr>
       {% for item in items %}
       <tr>
         <td>{{item.name}}</td>
-        <td>{{item.node}}</td>
-        <td>{{item.Notification}}</td>
-        <td>{{item.output_format}}</td>
+          <td>{{item.output_format}}</td>
         <td>{{item.output_filename}}</td>
+        <td>{{item.status}}</td>
+                {% if item.status == "Pending" %}
+        <td><a href="execute/{{item.id}}">Execute</a></td>
+        {% endif %}
+                {% if item.status == "Running" %}
+        <td><a href="#">Execute</a></td>
+        {% endif %}
+                {% if item.status == "Completed" %}
+        <td><a href="view_result/{{item.id}}">View</a></td>
+        {% endif %}
       </tr>
       {% endfor %}
     </table>

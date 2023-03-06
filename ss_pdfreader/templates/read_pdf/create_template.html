@@ -209,16 +209,16 @@
 
 
       {% if type == "form2" %}
-    <table class="table" style="border: 1px solid #001648;">
+    <table class="table" style="border: 1px solid #001648; table-layout: fixed; ">
       <tr><th scope="col">Image</th>
       <th scope="col">Text</th>
       <th scope="col">Create a New Field</th>
       </tr>
       <tr>
-        <td><embed src= "{{ record.sample.url }}" width="440" height= "600"></td>
+        <td><embed src= "{{ record.sample.url }}" width="100%" height= "600"></td>
         <td>
             <div class="row_text_1">
-                {{text}}
+                <pre>{{text}}</pre>
             </div>
         </td>
         <td>
@@ -250,6 +250,7 @@
                 <p>{{ form.occurance.label_tag }}
                     {{ form.occurance.errors }}
                     {{ form.occurance }}</p>
+                    {% if form.regex.label %}
                 <p>{{ form.regex_type.label_tag }}
                     {{ form.regex_type.errors }}
                     <select name="form-{{ forloop.counter0 }}-regex_type" onchange="myFunction(this.value,'{{ form.regex.id_for_label}}')">
@@ -262,7 +263,7 @@
                 <p>{{ form.regex.label_tag }}
                     {{ form.regex.errors }}
                     {{ form.regex }}</p>
-
+                    {% endif %}
                 </div>
                 {% endfor %}
                   <input type="hidden" name="pdf" value="{{record.id}}">

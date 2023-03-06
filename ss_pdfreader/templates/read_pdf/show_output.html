@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% extends "read_pdf/index.html" %}
+{% load static %}
+
+{% block title %}
+<title>Output</title>
+
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container">
+  <div class="jumbotron">
+      <div class="center mt-4">
+        <h2>Displaying few samples from your Data</h2>
+          </div>
+
+      {{ data|safe }}
+    <br>
+      <div class="center mt-4">
+    <a href="/download_file/{{job_id}}"><button class="btn btn-primary" name="download">Download All</button></a>
+          </div>
+  </div>
+  </div>
+{% endblock %}
+

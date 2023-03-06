@@ -32,4 +32,7 @@ urlpatterns = [
                   path('jobs', views.create_job),
                   path('show_jobs', views.show_jobs),
                   path('update/<int:p_id>', views.edit_update),
+                  path('execute/<int:j_id>', views.execute),
+                  path('view_result/<int:j_id>', views.view_result),
+                  path('download_file/<int:j_id>', views.download_file),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

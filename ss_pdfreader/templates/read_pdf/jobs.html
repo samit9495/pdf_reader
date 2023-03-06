@@ -130,9 +130,10 @@
           <h2>Please Enter Details to Create Job</h2>
         </div>
 
-      <form id="form-container" method="POST">
+      <form id="form-container" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
                   {{jobform.as_p}}
+                  {{fileform.as_p}}
         <div class="d-flex justify-content-end">
           <input type="submit" class="btn-blue mt-3" name="form1" onclick="enableinput()" value="Create">
         </div>
