@@ -133,7 +133,10 @@
       <form id="form-container" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
                   {{jobform.as_p}}
-                  {{fileform.as_p}}
+          <p>
+                  <label for="id_input">Input:</label>
+                <input type="file" name="input" onchange="selectFolder(event)" webkitdirectory="" multiple="" required="" directory="" id="id_input">
+            </p>
         <div class="d-flex justify-content-end">
           <input type="submit" class="btn-blue mt-3" name="form1" onclick="enableinput()" value="Create">
         </div>
@@ -151,6 +154,14 @@ document.getElementById('id_template').disabled = true;
 $('#form-container').submit(function(){
     $("#form-container :disabled").removeAttr('disabled');
 });
+
+function selectFolder(e) {
+    var theFiles = e.target.files;
+    var relativePath = theFiles[0].webkitRelativePath;
+    var folder = relativePath.split("/");
+    $("#" + id).val(folder[0]);
+}
+
 </script>
 
 {% endblock %}

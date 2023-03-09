@@ -23,6 +23,8 @@
       <tr><th scope="col">Job Name</th>
       <th scope="col">Output Format</th>
       <th scope="col">Output Filename</th>
+      <th scope="col">Started at</th>
+      <th scope="col">Finished at</th>
       <th scope="col">Status</th>
       <th scope="col">Action</th>
       </tr>
@@ -31,6 +33,8 @@
         <td>{{item.name}}</td>
           <td>{{item.output_format}}</td>
         <td>{{item.output_filename}}</td>
+        <td>{{item.start}}</td>
+        <td>{{item.end}}</td>
         <td>{{item.status}}</td>
                 {% if item.status == "Pending" %}
         <td><a href="execute/{{item.id}}">Execute</a></td>

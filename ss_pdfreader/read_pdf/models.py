@@ -46,7 +46,7 @@ NODE_CHOICES = [("Machine 1", "Machine 1"),
 
 INPUT_CHOICES = [("Network/Local", "Network/Local"), ("Email", "Email")]
 NOTIFICATION_CHOICES = [("Email", "Email"), ("SMS", "SMS"), ("IVR", "IVR")]
-OUTPUT_CHOICES = [("JSON", "JSON"), ("XML", "XML")]
+OUTPUT_CHOICES = [("JSON", "JSON"), ("XML", "XML"), ("CSV", "CSV"), ("EXCEL", "EXCEL")]
 
 
 class template(models.Model):
@@ -89,6 +89,8 @@ class Jobs(models.Model):
     output_format = models.CharField(max_length=50, choices=OUTPUT_CHOICES)
     output_filename = models.CharField(max_length=100)
     status = models.CharField(max_length=100, default="Pending")
+    start = models.DateTimeField()
+    end = models.DateTimeField()
 
     class Meta:
         verbose_name_plural = "Jobs"
@@ -99,4 +101,4 @@ class Jobpdf(models.Model):
     input = models.FileField(upload_to="job_pdfs")
     job = models.ForeignKey(Jobs, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
-    result = JSONField()
+    result = JSONField(null=True)

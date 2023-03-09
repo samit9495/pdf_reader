@@ -1,7 +1,8 @@
+import datetime
 import json
 import threading
 import time
-import dict2xml
+from dicttoxml import dicttoxml
 from django.http import HttpResponse
 from json2html import *
 from django.shortcuts import render, redirect
@@ -16,7 +17,8 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 import pdfplumber
-
+from xml.dom.minidom import parseString
+import pandas
 
 @login_required(login_url='/login/')
 def create_template(request):
@@ -27,14 +29,13 @@ def create_template(request):
         'form': form,
         "type": "form1",
     }
-                            
+
     if request.method == "POST" and request.POST["submit_button"] == "raw":
         if form.is_valid():
             form.initial = {"author": request.user, "status": "Sent for Approval"}
             rec = form.save()
 
         formset = FieldFromSet(queryset=Fields.objects.none())
-        print(request.POST["engine"])
         text = engines[request.POST["engine"]](os.path.join("pdfs", request.FILES["sample"].name))
         context["record"] = rec
         context["text"] = text
@@ -67,14 +68,11 @@ def edit_update(request, p_id):
     template_form = templateFrom(instance=template_rec)
 
     field_rec = Fields.objects.filter(pdf=p_id)
-    print(list(field_rec))
     field_form = FormSetField(queryset=field_rec)
 
     context = {"tform": template_form, "formset": field_form, "show": "show",
                "formset_show": True if len(field_rec) > 0 else False}
-
     if request.method == "POST":
-        print(request.POST)
         formset = FormSetField(data=request.POST)
         template_form = templateFrom(request.POST, request.FILES or None, instance=template_rec)
         if formset.is_valid():
@@ -93,7 +91,7 @@ def edit_update(request, p_id):
 @login_required(login_url='/login/')
 def view_template(request):
     if request.method == "GET":
-        all_records = template.objects.filter(status__in = ["Sent for Approval", "Approved", "Draft"]).order_by('-id')
+        all_records = template.objects.filter(status__in=["Sent for Approval", "Approved", "Draft"]).order_by('-id')
         context = {"records": all_records, "type": "show"}
     # if request.method == "POST":
     #     id = request.POST["item_select"]
@@ -105,7 +103,7 @@ def view_template(request):
 
 
 def approve_template(request):
-    templates = template.objects.filter(status="Approved")
+    templates = template.objects.filter(status="Sent for Approval")
 
     paginator = Paginator(templates, 10)
     try:
@@ -113,26 +111,24 @@ def approve_template(request):
     except:
         page_number = 0
     page_obj = paginator.get_page(page_number)
-    context = {"page_obj": page_obj, "rec_c ount": True if len(templates) > 0 else False}
+    context = {"page_obj": page_obj, "rec_count": True if len(templates) > 0 else False}
     if request.method == "POST":
         if request.POST.get("approve") and len(request.POST.getlist("approve_check")) > 0:
-            print("approving")
             ll = template.objects.filter(
                 id__in=request.POST.getlist("approve_check")).update(
                 status="Approved")
         if request.POST.get("approve_all"):
-            ll = template.objects.filter(status="Approved").update(status="Sent for Approval")
+            ll = template.objects.filter(status="Sent for Approval").update(status="Approved")
         return render(request, "read_pdf/approved.html", context={"count": ll, "user": request.user})
     return render(request, "read_pdf/approve.html", context=context)
 
 
 def create_job(request):
-    templates = template.objects.all()
+    templates = template.objects.filter(status="Approved")
     context = {"form": "first", "templates": templates}
     if request.method == "POST":
         if request.POST["form1"] == "Submit":
             t_id = request.POST["temp_select"]
-            print(t_id)
             fields = Fields.objects.filter(pdf=t_id).values_list("field")
             fields = ", ".join([x[0] for x in fields])
             # templateFrom(request.POST or None, request.FILES or None, instance=a)
@@ -143,7 +139,6 @@ def create_job(request):
             context["fileform"] = FileModelForm
 
         else:
-            print(request.POST)
             job_form = JobForm(request.POST or None, request.FILES or None)
             fileform = FileModelForm(request.POST or None, request.FILES or None)
             files = request.FILES.getlist('input')
@@ -153,15 +148,12 @@ def create_job(request):
                 # obj.save()
                 jbf = job_form.save()
                 for f in files:
-                    print(f">>>>>>>>{f}<<<<<<<<<")
                     file_instance = Jobpdf(input=f, job=jbf)
                     file_instance.save()
             else:
-                print(request.FILES.getlist('input'))
                 # print(job_form.as_p())
                 print(job_form.errors)
                 print(fileform.errors)
-                print("###########")
             return render(request, "read_pdf/created.html", context={"message": "Job Created Successfully"})
     return render(request, "read_pdf/jobs.html", context=context)
 
@@ -173,7 +165,6 @@ def show_jobs(request):
 
 
 def get_text1(record):
-    print("GET TEXT1")
     doc = fitz.open(os.path.join(settings.MEDIA_ROOT, record))
     text = ""
     for page in doc:
@@ -182,7 +173,6 @@ def get_text1(record):
 
 
 def get_text2(record):
-    print("GET TEXT 2")
     text = ""
     with pdfplumber.open(os.path.join(settings.MEDIA_ROOT, record)) as pdf:
         pages = pdf.pages
@@ -203,6 +193,7 @@ def execute(request, j_id):
     fields = Fields.objects.filter(pdf=job.template)
     items = Jobpdf.objects.filter(job=j_id)
     job.status = "Running"
+    job.start = datetime.datetime.now()
     job.save()
     t = threading.Thread(target=extract_data,
                          args=(job, items, fields))
@@ -215,13 +206,13 @@ def execute(request, j_id):
     return redirect(show_jobs)
     # return render(request, "read_pdf/show_output.html", context)
 
-    
+
 def extract_data(job, items, fields):
     engines = {"Engine 1": get_text1, "Engine 2": get_text2, "Engine 3": get_text1}
 
     for item in items:
-        dd = {}
         text = engines[job.template.engine](item.input.name)
+        dd = {"Filename": item.input.name}
         # text = text.replace("\n", " ")
         for f in fields:
             try:
@@ -232,42 +223,56 @@ def extract_data(job, items, fields):
         item.result = json.dumps(dd)
         item.save()
     job.status = "Completed"
+    job.end = datetime.datetime.now()
     job.save()
 
 
 def view_result(request, j_id):
     items = Jobpdf.objects.filter(job=j_id, status=True)
-    data_dict = {}
+    full_result = []
     count = 0
     for i in items:
         count += 1
         if count > 5:
             break
         d = json.loads(i.result)
-        print(i.id, i.job, d)
-        data_dict[i.input.name.split("/")[1].split(".pdf")[0]] = d
-    data = json2html.convert(json=json.dumps(data_dict))
+        full_result.append(d)
+    data = json2html.convert(json=json.dumps(full_result))
     context = {"data": data, "job_id": j_id}
     return render(request, "read_pdf/show_output.html", context)
 
 
 def download_file(request, j_id):
     job = Jobs.objects.get(id=j_id)
-    filename = f"{job.output_filename}.{job.output_format}"
+    filename = f"{job.output_filename}.{job.output_format.lower()}"
     path = os.path.join(settings.MEDIA_ROOT, "temp", filename)
-    items = Jobpdf.objects.filter(job=j_id,status=True)
-    data = {}
+    items = Jobpdf.objects.filter(job=j_id, status=True)
+    data = []
     for item in items:
-        data[item.input.name.split("/")[1].split(".pdf")[0]] = json.loads(item.result)
-
-    with open(path,"w+") as f:
+        # data[item.input.name.split("/")[1].split(".pdf")[0]] = json.loads(item.result)
+        data.append(json.loads(item.result))
+    with open(path, "w+") as f:
         if job.output_format == "XML":
-            xml = dict2xml(data)
+            xml = dicttoxml(data)
+            xml = parseString(xml)
+            xml = xml.toprettyxml()
             f.write(xml)
         elif job.output_format == "JSON":
             json_data = json.dumps(data, indent=4)
             f.write(json_data)
-    resp = HttpResponse('')
+    if job.output_format == "CSV":
+        df = pandas.DataFrame.from_dict(data)
+        df.to_csv(path, index=False)
+    elif job.output_format == "EXCEL":
+        path = path.replace(".excel", ".xlsx")
+        df = pandas.DataFrame.from_dict(data)
+        df.to_excel(path, index=False)
+        with open(path, 'rb') as tmp:
+            filename = tmp.name.split('/')[-1]
+            resp = HttpResponse(tmp, content_type='application/text;charset=UTF-8')
+            resp['Content-Disposition'] = "attachment; filename=%s" % filename
+        return resp
+    # resp = HttpResponse('')
     with open(path, 'r') as tmp:
         # filename = tmp.name.split('/')[-1]
         resp = HttpResponse(tmp, content_type='application/text;charset=UTF-8')
